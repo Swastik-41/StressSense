@@ -12,6 +12,8 @@ services:
 
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
 
+    initialDeployHook: python app/services/seed_questions.py
+
     envVars:
       - key: DATABASE_URL
         fromDatabase:

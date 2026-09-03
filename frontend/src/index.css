@@ -1,0 +1,90 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+@layer base {
+  :root {
+    --background: 160 20% 98%; /* soft mint/neutral background */
+    --foreground: 160 50% 10%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 160 50% 10%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 160 50% 10%;
+    
+    --primary: 170 60% 25%; /* deep teal */
+    --primary-foreground: 0 0% 98%;
+    
+    --secondary: 40 80% 60%; /* warm amber */
+    --secondary-foreground: 20 80% 20%;
+    
+    --muted: 160 20% 90%;
+    --muted-foreground: 160 20% 40%;
+    
+    --accent: 170 40% 90%;
+    --accent-foreground: 170 60% 25%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 160 20% 90%;
+    --input: 160 20% 90%;
+    --ring: 170 60% 25%;
+
+    --radius: 0.75rem;
+    
+    /* Stress state variables for charts/badges */
+    --stress-low: 150 70% 40%;
+    --stress-moderate: 35 90% 55%;
+    --stress-high: 0 80% 60%;
+  }
+
+  .dark {
+    --background: 160 40% 5%;
+    --foreground: 160 20% 95%;
+    
+    --card: 160 30% 8%;
+    --card-foreground: 160 20% 95%;
+    
+    --popover: 160 30% 8%;
+    --popover-foreground: 160 20% 95%;
+    
+    --primary: 170 50% 45%;
+    --primary-foreground: 160 20% 5%;
+    
+    --secondary: 40 70% 55%;
+    --secondary-foreground: 20 80% 15%;
+    
+    --muted: 160 20% 15%;
+    --muted-foreground: 160 20% 70%;
+    
+    --accent: 170 30% 20%;
+    --accent-foreground: 170 50% 80%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 160 30% 15%;
+    --input: 160 30% 15%;
+    --ring: 170 50% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/20 transition-colors duration-300;
+  }
+}
+
+/* Custom animations for micro-interactions */
+@keyframes select-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.animate-select-pop {
+  animation: select-pop 0.3s ease-out;
+}

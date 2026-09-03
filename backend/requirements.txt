@@ -1,0 +1,12 @@
+fastapi[standard]
+uvicorn
+sqlalchemy
+alembic
+psycopg2-binary
+pydantic
+pydantic-settings
+python-dotenv
+firebase-admin
+opencv-python-headless==4.10.0.84
+onnxruntime
+numpy

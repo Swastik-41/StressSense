@@ -1,0 +1,36 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# SQLite
+*.db
+stresssense.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env_python/
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Models
+backend/app/services/models/*.onnx
+backend/app/services/models/*.xml
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+*.sw?

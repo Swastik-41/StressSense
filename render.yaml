@@ -1,24 +1,31 @@
 services:
   - type: web
     name: stresssense-api
-    env: python
+    runtime: python
+    plan: free
     rootDir: backend
     healthCheckPath: /api/health
+
     buildCommand: |
       pip install -r requirements.txt
       python app/services/download_model.py
+
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+
     envVars:
       - key: DATABASE_URL
         fromDatabase:
           name: stresssense-db
           property: connectionString
+
       - key: CORS_ORIGINS
-        value: "https://your-frontend-domain.vercel.app" # UPDATE THIS
+        value: "https://your-frontend-domain.vercel.app"
+
       - key: FIREBASE_CREDENTIALS
-        sync: false # Set securely in Render Dashboard
+        sync: false
 
 databases:
   - name: stresssense-db
+    plan: free
     databaseName: stresssense
     user: stresssense_user

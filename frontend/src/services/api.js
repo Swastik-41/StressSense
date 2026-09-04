@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { auth } from './firebase';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+let API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+// Remove trailing /api or /api/ to prevent duplicating it since frontend requests hardcode /api/
+API_URL = API_URL.replace(/\/api\/?$/, '');
 
 const api = axios.create({
   baseURL: API_URL,

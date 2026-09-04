@@ -64,26 +64,48 @@ from app.database import engine, SessionLocal, Base
 from app.models.models import Question
 
 def seed():
-    Base.metadata.create_all(bind=engine)
-    db = SessionLocal()
-    
-    if db.query(Question).count() == 0:
-        print("Seeding questions...")
-        for q in QUESTIONS:
-            db_q = Question(
-                id=str(uuid.uuid4()),
-                question_text=q["text"],
-                category=q["category"],
-                scoring_weight=q["weight"],
-                options=["Never", "Rarely", "Sometimes", "Often", "Very Often"],
-                is_reverse_scored=q["reverse"]
-            )
-            db.add(db_q)
-        db.commit()
-        print("Done.")
-    else:
-        print("Database already seeded.")
-    db.close()
+    print("Initializing Database Seeding...")
+    try:
+        # Create tables if they don't exist
+        Base.metadata.create_all(bind=engine)
+        db = SessionLocal()
+        
+        expected_count = len(QUESTIONS)
+        initial_count = db.query(Question).count()
+        print(f"Question bank before seed: {initial_count} (Expected: {expected_count})")
+        
+        if initial_count == 0:
+            print("Seeding questions...")
+            for q in QUESTIONS:
+                db_q = Question(
+                    id=str(uuid.uuid4()),
+                    question_text=q["text"],
+                    category=q["category"],
+                    scoring_weight=q["weight"],
+                    options=["Never", "Rarely", "Sometimes", "Often", "Very Often"],
+                    is_reverse_scored=q["reverse"]
+                )
+                db.add(db_q)
+            db.commit()
+            
+            inserted_count = len(QUESTIONS)
+            print(f"Questions inserted: {inserted_count}")
+        else:
+            print("Database already contains questions. Skipping insertion to prevent duplicates.")
+            
+        final_count = db.query(Question).count()
+        print(f"Question bank after seed: {final_count}")
+        
+        if final_count != expected_count:
+            print(f"ERROR: Expected question bank to have {expected_count} questions, but found {final_count}.")
+            sys.exit(1)
+            
+        db.close()
+        print("Seeding process completed successfully.")
+        
+    except Exception as e:
+        print(f"ERROR: Database seeding failed with exception: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     seed()

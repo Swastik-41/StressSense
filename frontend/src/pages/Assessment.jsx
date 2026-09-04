@@ -15,6 +15,7 @@ export default function Assessment() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [cameraActive, setCameraActive] = useState(false);
+  const [mediaStream, setMediaStream] = useState(null);
   
   // Tallies for facial analysis
   const tallies = useRef({
@@ -45,6 +46,7 @@ export default function Assessment() {
     const initCamera = async () => {
       try {
         stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        setMediaStream(stream);
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
@@ -63,6 +65,14 @@ export default function Assessment() {
       }
     };
   }, []);
+
+  // Ensure stream is assigned when video element mounts
+  useEffect(() => {
+    if (videoRef.current && mediaStream && videoRef.current.srcObject !== mediaStream) {
+      videoRef.current.srcObject = mediaStream;
+      console.log("[FACIAL] Assigned stream to video element after mount");
+    }
+  }, [question, mediaStream]);
 
   const progressRef = useRef(progress);
   useEffect(() => {
@@ -83,6 +93,9 @@ export default function Assessment() {
       const video = videoRef.current;
       
       // Ensure video has loaded metadata and is ready before capturing
+      console.log(`[FACIAL] readyState = ${video.readyState}`);
+      console.log(`[FACIAL] video dimensions = ${video.videoWidth}x${video.videoHeight}`);
+      
       if (video.readyState < 2 || !video.videoWidth || !video.videoHeight) {
         return;
       }
@@ -93,15 +106,21 @@ export default function Assessment() {
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       
       const base64Image = canvas.toDataURL('image/jpeg', 0.5);
+      const blobSize = Math.round(base64Image.length * 0.75);
+      
       console.log("[FACIAL] frame capture started");
       console.log("[FACIAL] frame captured");
+      console.log(`[FACIAL] blob size = ${blobSize} bytes`);
       
       try {
         tallies.current.total += 1;
         console.log("[FACIAL] sending frame");
+        console.log(`[FACIAL] facial endpoint = /api/assessment/${assessmentId}/process-frame`);
         const res = await api.post(`/api/assessment/${assessmentId}/process-frame`, {
           image: base64Image
         });
+        
+        console.log(`[FACIAL] response = ${res.status}`);
         
         console.log("[FACIAL] frame API response");
         if (res.data.face_found) {
